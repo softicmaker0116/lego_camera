@@ -7,7 +7,7 @@
 //    2016.11.21    LinkIt 7688 Duo - pass
 //    2016.12.17    Arduino Pro Mini - pass
 //    2016.12.20    Several enhancements - LED event indicator, SD re-init, flow fine tune...etc
-//    2016.12.20	sw ready - pass
+//    2016.12.20	SW pass -  Use MCU only for both sensoring and data processing.
 
 #include <arduino.h>
 #include <SoftwareSerial.h>
