@@ -3,8 +3,10 @@
 //  Description: Camera snapshot to SD card
 //  Updates:
 //    2016.11.01    Basic function
-//    2016.11.13    Arduino Nano - Test pass
-//    2016.11.21    LinkIt 7688 Duo - Test pass
+//    2016.11.13    Arduino Nano - pass
+//    2016.11.21    LinkIt 7688 Duo - pass
+//    2016.12.17    Arduino Pro Mini - pass
+//    2016.12.20    Several enhancements - LED event indicator, SD re-init, flow fine tune...etc
 
 #include <arduino.h>
 #include <SoftwareSerial.h>
@@ -26,15 +28,18 @@
 #define PIC_COLOER            PIC_COLOER_JPEG
 
 File myFile;
-//SoftwareSerial softSerial(4, 5);  //rx,tx for UART for Arduino / Arduino Mini Pro
-SoftwareSerial softSerial(11, 12);  //rx,tx for UART for LinkIt 7688
+SoftwareSerial softSerial(2, 3);  //rx,tx for UART for Arduino / Arduino Mini Pro
+//SoftwareSerial softSerial(11, 12);  //rx,tx for UART for LinkIt 7688
 
 const byte cameraAddr = (CAM_ADDR << 5);  // addr
-const int buttonPin = A5;                 // the number of the pushbutton pin
-//const int buttonPin = A3;                 // for Arduino Pro Mini
+//const int buttonPin = A5;                 // the number of the pushbutton pin
+const int buttonPin = A3;                 // for Arduino Pro Mini
 unsigned long picTotalLen = 0;            // picture length
-//const int Camera_CS = 10;                 // Camera CS for Arduino
-const int Camera_CS = 17;                 // Camera CS for LinkIt 7688
+const int Camera_CS = 10;                 // Camera CS for Arduino
+//const int Camera_CS = 17;                 // Camera CS for LinkIt 7688
+int redPin = 7;   // 設定 RGB R-Pin
+int greenPin = 8;  // 設定 RGB G-Pin
+int bluePin = 9;  // 設定 RGB B-Pin
 char picName[] = "pic******.jpg";
 int picNameNum = 0;
 
@@ -46,7 +51,10 @@ void setup()
   
     pinMode(buttonPin, INPUT);    // initialize the pushbutton pin as an input
     pinMode(Camera_CS, OUTPUT);          // CS pin of SD Card Shield
-   
+    pinMode(redPin, OUTPUT);
+    pinMode(greenPin, OUTPUT);
+    pinMode(bluePin, OUTPUT);
+    
     delay(3000);  // uart log failed if not add this line...
     SD_init();
     CAM_sync();
@@ -55,11 +63,12 @@ void setup()
 void SD_init()
 {
     delay(2000);     // wait for serial port stable before printing log
+    setColor(255, 0, 0); // red 
     Serial.print("Initializing SD card....");
  
     while(!SD.begin(Camera_CS)){
         Serial.println("failed");
-        delay(5000);
+        delay(3000);
         Serial.print("Initializing SD card....");
     }
     Serial.println("success!\n");
@@ -69,12 +78,14 @@ void loop()
 {
     int n=0;
     while(1){
+        setColor(0, 0, 255); // blue
         Serial.println("[Info]\tPress the button to take a picture");
-        while (digitalRead(buttonPin) == LOW);
-        if(digitalRead(buttonPin) == HIGH){
+        while (digitalRead(buttonPin) == HIGH);
+        if(digitalRead(buttonPin) == LOW){
             delay(20);                               //Debounce
-            if (digitalRead(buttonPin) == HIGH)
+            if (digitalRead(buttonPin) == LOW)
             {
+                setColor(0, 255, 0); // green
                 Serial.println("Pressed-botton detected...\n");
                 delay(200);
                 if(n == 0) CAM_init();
@@ -144,6 +155,7 @@ void CAM_sync()
     char cmd[] = {0xaa,0x0d|cameraAddr,0x00,0x00,0x00,0x00} ;
     unsigned char resp[6];
 
+    setColor(255, 0, 255); // purple
     Serial.println("Sync with camera...");
   
   while (1) 
@@ -276,7 +288,10 @@ void CAM_Capture()
   
   myFile = SD.open(picName, FILE_WRITE); 
   if(!myFile){
+    setColor(255, 0, 0); // red 
     Serial.println("myFile open fail...");
+    myFile.close();
+    SD_init();
   }else{
     for (unsigned int i = 0; i < pktCnt; i++)
     {
@@ -307,14 +322,22 @@ void CAM_Capture()
     cmd[4] = 0xf0;
     cmd[5] = 0xf0; 
     sendCmd(cmd, 6); 
+    
+    myFile.close();
+    Serial.println("Capturing completed!");
+    Serial.print("PIC name: ");
+    Serial.println(picName);
+    picNameNum ++;
   }
-  myFile.close();
-  Serial.println("Capturing completed!");
-  Serial.print("PIC name: ");
-  Serial.println(picName);
-  picNameNum ++;
 }
 
 void int2str(int i, char *s) {
   sprintf(s,"pic%d.jpg",i);
+}
+
+void setColor(int red , int green, int blue)
+{
+  analogWrite(redPin, red);
+  analogWrite(greenPin, green);
+  analogWrite(bluePin, blue);
 }
