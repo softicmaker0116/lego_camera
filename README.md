@@ -2,7 +2,7 @@
 *#Arduino* *#LinkIt* *#Camera* *#Lego*
 # 
 > This project is mainly aimed at designing and implementing a lego camera 
-> with open source microcontrollers and hareware components.
+> with open source microcontrollers and hardware components.
 # 
 ##### Components:
 * Arduino Mini or LinkIt Smart 7688 Duo
