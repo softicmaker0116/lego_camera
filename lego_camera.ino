@@ -11,28 +11,27 @@
 #include <SPI.h>
 
 #define PIC_PKT_LEN           128              //data length of each read, dont set this too big because ram is limited
-//#define PIC_JPEG_RESO_LOW     0x01             // JPEG resolution: 80*64
+#define PIC_JPEG_RESO_LOW     0x01             // JPEG resolution: 80*64
 #define PIC_JPEG_RESO_QQVGA   0x03             // JPEG resolution: 160*128
 #define PIC_JPEG_RESO_QVGA    0x05             // JPEG resolution: 320*240
 #define PIC_JPEG_RESO_VGA     0x07             // JPEG resolution: 640*480
-//#define PIC_COLOER_GRAY       0x03             // 8-bits Gray-Scale
+#define PIC_COLOER_GRAY       0x03             // 8-bits Gray-Scale
 #define PIC_COLOER_JPEG       0x07             // JPEG
 
 #define CAM_ADDR       0
 #define CAM_SERIAL     softSerial
 
-#define PIC_JPEG_RESO         PIC_JPEG_RESO_QQVGA
+#define PIC_JPEG_RESO         PIC_JPEG_RESO_VGA
 #define PIC_COLOER            PIC_COLOER_JPEG
 
 File myFile;
-//SoftwareSerial softSerial(2, 3);  //rx,tx for UART for Arduino
-SoftwareSerial softSerial(11, 12);  //rx,tx for UART for LinkIt 7688
+SoftwareSerial softSerial(2, 3);  //rx,tx for UART
 
 const byte cameraAddr = (CAM_ADDR << 5);  // addr
 const int buttonPin = A5;                 // the number of the pushbutton pin
 unsigned long picTotalLen = 0;            // picture length
-//const int Camera_CS = 10;                 // Camera CS for Arduino
-const int Camera_CS = 17;                 // Camera CS for LinkIt 7688
+const int Camera_CS = 10;                 // Camera CS for Arduino
+//const int Camera_CS = 17;                 // Camera CS for LinkIt 7688
 char picName[] = "pic******.jpg";
 int picNameNum = 0;
 
@@ -67,21 +66,20 @@ void loop()
 {
     int n=0;
     while(1){
-        Serial.println("[Info]\tPress the button to take a picture");
+        Serial.println("\nPress the button to take a picture");
         while (digitalRead(buttonPin) == LOW);
         if(digitalRead(buttonPin) == HIGH){
             delay(20);                               //Debounce
             if (digitalRead(buttonPin) == HIGH)
             {
-                Serial.println("Pressed-botton detected...\n");
+                Serial.println("Start taking picture...\n");
                 delay(200);
                 if(n == 0) CAM_init();
-                CAM_CaptMode();
+                CAM_CapSetting();
                 CAM_Capture();
             }
-            Serial.print("Process completed ,number : ");
-            Serial.println(n);
-            Serial.println("\n");
+            Serial.print("\r\nProcess completed ,number : ");
+            Serial.println(n,"\n\n\n");
             n++ ;
         }
     }
@@ -168,7 +166,7 @@ void CAM_sync()
     //Serial.println("Start sending ACK...");
     sendCmd(cmd, 6);
     //Serial.println("done");
-    Serial.println("Camera synchronization success!\n");
+    Serial.println("Camera synchronization success!");
 }
 /*********************************************************************/
 void CAM_init()
@@ -191,12 +189,12 @@ void CAM_init()
   }
 }
 
-void CAM_CaptMode()
+void CAM_CapSetting()
 {
   char cmd[] = { 0xaa, 0x06 | cameraAddr, 0x08, PIC_PKT_LEN & 0xff, (PIC_PKT_LEN>>8) & 0xff ,0}; 
   unsigned char resp[6];
 
-  Serial.println("Set capture mode...");
+  Serial.println("Capturing image...");
     
   while (1)
   {
@@ -208,7 +206,7 @@ void CAM_CaptMode()
     if (resp[0] == 0xaa && resp[1] == (0x0e | cameraAddr) && resp[2] == 0x06 && resp[4] == 0 && resp[5] == 0) break; 
   }
   
-  // set snapshot - compressed picture
+    // set snapshot - compressed picture
   cmd[1] = 0x05 | cameraAddr;
   cmd[2] = 0;
   cmd[3] = 0;
@@ -223,17 +221,11 @@ void CAM_CaptMode()
     
     if (resp[0] == 0xaa && resp[1] == (0x0e | cameraAddr) && resp[2] == 0x05 && resp[4] == 0 && resp[5] == 0) break;
   }
-  Serial.println("Capture mode setting completed!\n");
-}
-/*********************************************************************/
-void CAM_Capture()
-{
- 
-  char cmd[] = { 0xaa, 0x04 | cameraAddr, 0x01, 0x00, 0x00, 0x00 }; 
-  unsigned char resp[6];
+
   
-  Serial.println("Set image-get setting...");
-  
+    // get snapshot picture
+  cmd[1] = 0x04 | cameraAddr;
+  cmd[2] = 0x1;
   while (1) 
   {
     clearRxBuf();
@@ -249,21 +241,24 @@ void CAM_Capture()
       if (resp[0] == 0xaa && resp[1] == (0x0a | cameraAddr) && resp[2] == 0x01)
       {
         picTotalLen = (resp[3]) | (resp[4] << 8) | (resp[5] << 16); 
-        Serial.print("Image-get setting completed! picTotalLen: ");
+        Serial.print("Snap shot data get! picTotalLen: ");
         Serial.println(picTotalLen);
-        Serial.println();
         break;
       }
     }
   }
   
-  Serial.println("Start getting image...");
+  Serial.println("Capturing success!\n");
+}
+/*********************************************************************/
+void CAM_Capture()
+{
   
+  Serial.println("Saving picture...");
   unsigned int pktCnt = (picTotalLen) / (PIC_PKT_LEN - 6); 
   if ((picTotalLen % (PIC_PKT_LEN-6)) != 0) pktCnt += 1;
   
-  cmd[1] = 0x0e | cameraAddr;  
-  cmd[2] = 0x00;
+  char cmd[] = { 0xaa, 0x0e | cameraAddr, 0x00, 0x00, 0x00, 0x00 };  
   unsigned char pkt[PIC_PKT_LEN];
 
   int2str(picNameNum, picName);
@@ -307,9 +302,8 @@ void CAM_Capture()
     sendCmd(cmd, 6); 
   }
   myFile.close();
-  Serial.println("Capturing completed!");
   Serial.print("PIC name: ");
-  Serial.println(picName);
+  Serial.print(picName);
   picNameNum ++;
 }
 
