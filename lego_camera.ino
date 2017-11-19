@@ -5,6 +5,7 @@
 //    2016.11.01    Basic function
 //    2016.11.13    Arduino Nano - Test pass
 //    2016.11.21    LinkIt 7688 Duo - Test pass
+//	  2016.12.25	SW pass -  Use MCU sensoring and use MPU for data processing in Linkit series.
 
 #include <arduino.h>
 #include <SoftwareSerial.h>
@@ -42,13 +43,14 @@ int picNameNum = 0;
 void setup()
 {
     Serial.begin(9600);
+    Serial1.begin(9600);
     CAM_SERIAL.begin(9600);       //cant be faster than 9600, maybe difference with diff board.
   
     pinMode(buttonPin, INPUT);    // initialize the pushbutton pin as an input
     pinMode(Camera_CS, OUTPUT);          // CS pin of SD Card Shield
    
     delay(3000);  // uart log failed if not add this line...
-    SD_init();
+//    SD_init();
     CAM_sync();
 }
 
@@ -269,13 +271,14 @@ void CAM_Capture()
   unsigned char pkt[PIC_PKT_LEN];
 
   int2str(picNameNum, picName);
-  while(SD.exists(picName)){
+/*  while(SD.exists(picName)){
     picNameNum++;
     int2str(picNameNum, picName);
   }
-  
-  myFile = SD.open(picName, FILE_WRITE); 
-  if(!myFile){
+*/  
+//  myFile = SD.open(picName, FILE_WRITE); 
+    int myFile_t = 1;
+  if(!myFile_t){
     Serial.println("myFile open fail...");
   }else{
     for (unsigned int i = 0; i < pktCnt; i++)
@@ -303,9 +306,10 @@ void CAM_Capture()
 
       uint8_t *data;
       data = (uint8_t *)&pkt[4];
-      myFile.write(data, cnt-6); 
+//      myFile.write(data, cnt-6); 
       for(int i=0;i<=cnt-6;i++){
         Serial.println(data[i]);
+        Serial1.println(data[i]);
       }
       
       //if (cnt != PIC_PKT_LEN) break;
@@ -314,7 +318,7 @@ void CAM_Capture()
     cmd[5] = 0xf0; 
     sendCmd(cmd, 6); 
   }
-  myFile.close();
+//  myFile.close();
   Serial.println("Capturing completed!");
   Serial.print("PIC name: ");
   Serial.println(picName);
