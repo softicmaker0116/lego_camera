@@ -12,25 +12,24 @@
 * Lego
 
 
-![GITHUB](https://drive.google.com/file/d/18MUGK4qd5WHDRPoE4C_8fNyIk35hvi4Q/view?usp=sharing "Product-front")
+![GITHUB](https://www.dropbox.com/s/16vjgwzmukcqbb4/1.jpg?dl=0 "Product-front")
 
-![GITHUB](https://drive.google.com/file/d/1pMRwtIjeZPD1MVYVr0bhnXaa3t52mJ0x/view?usp=sharing "Product-front_camera")
+![GITHUB](https://www.dropbox.com/s/mkth32c3qr1vuyb/2.jpg?dl=0 "Product-front_camera")
 
-![GITHUB](https://drive.google.com/file/d/1LVO2pZ8m25kZ30-9dR-auKpAuIOEzpxg/view?usp=sharing "Product-camera")
+![GITHUB](https://www.dropbox.com/s/m3xjw1rl0x8yts9/3.jpg?dl=0 "Product-camera")
 
-![GITHUB](https://drive.google.com/file/d/1RyaS1BYuikfLBVBAVANZtIDOP0rRQiJo/view?usp=sharing "Product-side")
+![GITHUB](https://www.dropbox.com/s/m25ypmzquirj8gr/4.jpg?dl=0 "Product-side")
 
-![GITHUB](https://drive.google.com/file/d/1-UwpooLO8c5V8YYqa8USTTUI7VlkqRxx/view?usp=sharing "Product-viewfinder")
+![GITHUB](https://www.dropbox.com/s/2kkhdwczqonalns/5.jpg?dl=0 "Product-viewfinder")
 
-![GITHUB](https://drive.google.com/file/d/1CQHG97ef6at8mWS10583zaCTtf59vuTF/view?usp=sharing "Product-viewfinder2")
+![GITHUB](https://www.dropbox.com/s/9d78xy9pcr7extc/6.jpg?dl=0 "Product-viewfinder2")
 
-![GITHUB](https://drive.google.com/file/d/1AzW3wUz9vEXWdQ5V7Z_6Hw7k043fWfN7/view?usp=sharing "Product-sd card")
+![GITHUB](https://www.dropbox.com/s/3s146hdp9t3fa4a/7.jpg?dl=0 "Product-sd card")
 
-![GITHUB](https://drive.google.com/file/d/1Q8-nrVg-QPpnG62FpMejGupfnuoaKgoQ/view?usp=sharing "Product-power switch")
+![GITHUB](https://www.dropbox.com/s/qhqnalxoi9fa2rf/8.jpg?dl=0 "Product-power switch")
 
-![GITHUB](https://drive.google.com/file/d/1QRVZkCmxeOxFuI9FaJXIvwIfml4tOkPY/view?usp=sharing "Product-button")
+![GITHUB](https://www.dropbox.com/s/1x9ygn7lv0bqlw8/9.jpg?dl=0 "Product-button")
 
-![GITHUB](https://drive.google.com/file/d/1o07UeHzRXfEzDkDexsYIyO-CkqQn5W3
-C/view?usp=sharing "Product-microcontroller")
+![GITHUB](https://www.dropbox.com/s/xpahyx4mjuftrxy/10.jpg?dl=0 "Product-microcontroller")
 
-![GITHUB](https://drive.google.com/file/d/1jfpduzbSGngdCKKu5JdTrGxM6Oo_rBLZ/view?usp=sharing "Product-upside")
+![GITHUB](https://www.dropbox.com/s/2cdz68fqx0p8uz6/11.jpg?dl=0 "Product-upside")
