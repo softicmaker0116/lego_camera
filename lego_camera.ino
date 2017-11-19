@@ -66,20 +66,21 @@ void loop()
 {
     int n=0;
     while(1){
-        Serial.println("\nPress the button to take a picture");
+        Serial.println("[Info]\tPress the button to take a picture");
         while (digitalRead(buttonPin) == LOW);
         if(digitalRead(buttonPin) == HIGH){
             delay(20);                               //Debounce
             if (digitalRead(buttonPin) == HIGH)
             {
-                Serial.println("Start taking picture...\n");
+                Serial.println("Pressed-botton detected...\n");
                 delay(200);
                 if(n == 0) CAM_init();
-                CAM_CapSetting();
+                CAM_CaptMode();
                 CAM_Capture();
             }
-            Serial.print("\r\nProcess completed ,number : ");
-            Serial.println(n,"\n\n\n");
+            Serial.print("Process completed ,number : ");
+            Serial.println(n);
+            Serial.println("\n");
             n++ ;
         }
     }
@@ -166,7 +167,7 @@ void CAM_sync()
     //Serial.println("Start sending ACK...");
     sendCmd(cmd, 6);
     //Serial.println("done");
-    Serial.println("Camera synchronization success!");
+    Serial.println("Camera synchronization success!\n");
 }
 /*********************************************************************/
 void CAM_init()
@@ -189,12 +190,12 @@ void CAM_init()
   }
 }
 
-void CAM_CapSetting()
+void CAM_CaptMode()
 {
   char cmd[] = { 0xaa, 0x06 | cameraAddr, 0x08, PIC_PKT_LEN & 0xff, (PIC_PKT_LEN>>8) & 0xff ,0}; 
   unsigned char resp[6];
 
-  Serial.println("Capturing image...");
+  Serial.println("Set capture mode...");
     
   while (1)
   {
@@ -206,7 +207,7 @@ void CAM_CapSetting()
     if (resp[0] == 0xaa && resp[1] == (0x0e | cameraAddr) && resp[2] == 0x06 && resp[4] == 0 && resp[5] == 0) break; 
   }
   
-    // set snapshot - compressed picture
+  // set snapshot - compressed picture
   cmd[1] = 0x05 | cameraAddr;
   cmd[2] = 0;
   cmd[3] = 0;
@@ -221,11 +222,17 @@ void CAM_CapSetting()
     
     if (resp[0] == 0xaa && resp[1] == (0x0e | cameraAddr) && resp[2] == 0x05 && resp[4] == 0 && resp[5] == 0) break;
   }
-
+  Serial.println("Capture mode setting completed!\n");
+}
+/*********************************************************************/
+void CAM_Capture()
+{
+ 
+  char cmd[] = { 0xaa, 0x04 | cameraAddr, 0x01, 0x00, 0x00, 0x00 }; 
+  unsigned char resp[6];
   
-    // get snapshot picture
-  cmd[1] = 0x04 | cameraAddr;
-  cmd[2] = 0x1;
+  Serial.println("Set image-get setting...");
+  
   while (1) 
   {
     clearRxBuf();
@@ -241,24 +248,21 @@ void CAM_CapSetting()
       if (resp[0] == 0xaa && resp[1] == (0x0a | cameraAddr) && resp[2] == 0x01)
       {
         picTotalLen = (resp[3]) | (resp[4] << 8) | (resp[5] << 16); 
-        Serial.print("Snap shot data get! picTotalLen: ");
+        Serial.print("Image-get setting completed! picTotalLen: ");
         Serial.println(picTotalLen);
+        Serial.println();
         break;
       }
     }
   }
   
-  Serial.println("Capturing success!\n");
-}
-/*********************************************************************/
-void CAM_Capture()
-{
+  Serial.println("Start getting image...");
   
-  Serial.println("Saving picture...");
   unsigned int pktCnt = (picTotalLen) / (PIC_PKT_LEN - 6); 
   if ((picTotalLen % (PIC_PKT_LEN-6)) != 0) pktCnt += 1;
   
-  char cmd[] = { 0xaa, 0x0e | cameraAddr, 0x00, 0x00, 0x00, 0x00 };  
+  cmd[1] = 0x0e | cameraAddr;  
+  cmd[2] = 0x00;
   unsigned char pkt[PIC_PKT_LEN];
 
   int2str(picNameNum, picName);
@@ -302,8 +306,9 @@ void CAM_Capture()
     sendCmd(cmd, 6); 
   }
   myFile.close();
+  Serial.println("Capturing completed!");
   Serial.print("PIC name: ");
-  Serial.print(picName);
+  Serial.println(picName);
   picNameNum ++;
 }
 
