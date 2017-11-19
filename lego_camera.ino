@@ -22,11 +22,11 @@
 #define CAM_ADDR       0
 #define CAM_SERIAL     softSerial
 
-#define PIC_JPEG_RESO         PIC_JPEG_RESO_QQVGA
+#define PIC_JPEG_RESO         PIC_JPEG_RESO_VGA
 #define PIC_COLOER            PIC_COLOER_JPEG
 
 File myFile;
-//SoftwareSerial softSerial(2, 3);  //rx,tx for UART for Arduino
+//SoftwareSerial softSerial(4, 5);  //rx,tx for UART for Arduino / Arduino Mini Pro
 SoftwareSerial softSerial(11, 12);  //rx,tx for UART for LinkIt 7688
 
 const byte cameraAddr = (CAM_ADDR << 5);  // addr
