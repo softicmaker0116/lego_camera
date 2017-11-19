@@ -12,7 +12,5 @@
 * Lego
 # 
 ##### Product Images:
-* Product-front
-![Product-front_camera](https://github.com/softicmaker0116/multimedia/blob/master/logo_camera-1-Product-front.jpg "Product-front")
-* Product-upside
-![Product-upside](https://github.com/softicmaker0116/multimedia/blob/master/logo_camera-11-Product-upside.jpg "Product-upside")
+* Product
+![Product](https://github.com/softicmaker0116/multimedia/blob/master/logo_camera-11-Product-upside.jpg "Product-front/upside")
