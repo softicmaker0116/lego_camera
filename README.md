@@ -8,9 +8,10 @@
 * CJ-OV528 camera
 * SD card
 * LED
-* button
+* Buttons
 * Lego
-* battery
+* Jumper wire
+* Battery
 # 
 ##### Product Image:
 ![Product](https://github.com/softicmaker0116/multimedia/blob/master/logo_camera-13-Product-combine_4.jpg "Product")
