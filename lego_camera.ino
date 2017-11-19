@@ -1,9 +1,10 @@
 //  File: SerialCamera_WeiLun
 //  Author: Wei-Lun Tsai
-//  Description: Camera design
+//  Description: Camera snapshot to SD card
 //  Updates:
 //    2016.11.01    Basic function
-//    2016.11.13    
+//    2016.11.13    Arduino Nano - Test pass
+//    2016.11.21    LinkIt 7688 Duo - Test pass
 
 #include <arduino.h>
 #include <SoftwareSerial.h>
@@ -11,27 +12,29 @@
 #include <SPI.h>
 
 #define PIC_PKT_LEN           128              //data length of each read, dont set this too big because ram is limited
-#define PIC_JPEG_RESO_LOW     0x01             // JPEG resolution: 80*64
+//#define PIC_JPEG_RESO_LOW     0x01             // JPEG resolution: 80*64
 #define PIC_JPEG_RESO_QQVGA   0x03             // JPEG resolution: 160*128
 #define PIC_JPEG_RESO_QVGA    0x05             // JPEG resolution: 320*240
 #define PIC_JPEG_RESO_VGA     0x07             // JPEG resolution: 640*480
-#define PIC_COLOER_GRAY       0x03             // 8-bits Gray-Scale
+//#define PIC_COLOER_GRAY       0x03             // 8-bits Gray-Scale
 #define PIC_COLOER_JPEG       0x07             // JPEG
 
 #define CAM_ADDR       0
 #define CAM_SERIAL     softSerial
 
-#define PIC_JPEG_RESO         PIC_JPEG_RESO_VGA
+#define PIC_JPEG_RESO         PIC_JPEG_RESO_QQVGA
 #define PIC_COLOER            PIC_COLOER_JPEG
 
 File myFile;
-SoftwareSerial softSerial(2, 3);  //rx,tx for UART
+//SoftwareSerial softSerial(2, 3);  //rx,tx for UART for Arduino
+SoftwareSerial softSerial(11, 12);  //rx,tx for UART for LinkIt 7688
 
 const byte cameraAddr = (CAM_ADDR << 5);  // addr
 const int buttonPin = A5;                 // the number of the pushbutton pin
+//const int buttonPin = A3;                 // for Arduino Pro Mini
 unsigned long picTotalLen = 0;            // picture length
-const int Camera_CS = 10;                 // Camera CS for Arduino
-//const int Camera_CS = 17;                 // Camera CS for LinkIt 7688
+//const int Camera_CS = 10;                 // Camera CS for Arduino
+const int Camera_CS = 17;                 // Camera CS for LinkIt 7688
 char picName[] = "pic******.jpg";
 int picNameNum = 0;
 
